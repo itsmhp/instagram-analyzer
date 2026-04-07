@@ -1,6 +1,6 @@
 # PROJECT_MASTER.md — Instagram Analyzer
 
-> **Version**: 0.2.0 | **Created**: 2026-04-07 | **Updated**: 2026-04-07 | **Status**: Phase 1 + Phase 3 In Progress  
+> **Version**: 0.3.0 | **Created**: 2026-04-07 | **Updated**: 2026-04-07 | **Status**: Phase 1 Complete · Phase 3 In Progress  
 > **Repository**: `https://github.com/itsmhp/instagram-analyzer`
 
 ---
@@ -44,7 +44,8 @@ The tool's own operator — a single user analyzing their own legitimately-obtai
 |---|---|---|
 | **Language** | Python 3.10+ | Ecosystem maturity, HTML parsing libraries, rapid prototyping. |
 | **HTML Parsing** | `beautifulsoup4` + `lxml` | Industry-standard for HTML scraping/parsing. Handles malformed markup. |
-| **GUI Framework** | `customtkinter` | Modern-looking native desktop GUI. No web server overhead. Cross-platform. |
+| **GUI Framework** | `customtkinter` (launcher) | Lightweight launcher for folder selection. Dashboard rendered as self-contained HTML opened in the user's default browser — zero rendering overhead in Python. |
+| **Dashboard** | Self-contained HTML + CSS + JS | Beautiful, responsive report opened in the browser. No external dependencies. All styles/scripts embedded inline. |
 | **Data Persistence** (Phase 2) | SQLite via `sqlite3` (stdlib) | Zero-config embedded database. Ships with Python. |
 | **Charting** (Phase 3) | `matplotlib` embedded in Tkinter | Proven integration path with Tk canvas. |
 | **Packaging** (Future) | `PyInstaller` or `cx_Freeze` | Single-binary distribution for end users. |
@@ -63,7 +64,8 @@ flowchart TD
     C -->|"Phase 2: Persistent"| E["SQLite Database"]
     D --> F["⚙️ Analytics Engine"]
     E --> F
-    F -->|"Computed Results"| G["🖥️ CustomTkinter Dashboard"]
+    F -->|"Computed Results"| G["� HTML Report Generator"]
+    G -->|"instagram_report.html"| H["🌐 Browser Dashboard"]
 
     subgraph PARSE ["Parsing Layer"]
         B
@@ -81,12 +83,14 @@ flowchart TD
 
     subgraph UI ["Presentation Layer"]
         G
+        H
     end
 
     style A fill:#1a1a2e,stroke:#e94560,color:#fff
     style B fill:#16213e,stroke:#0f3460,color:#fff
     style F fill:#0f3460,stroke:#533483,color:#fff
     style G fill:#533483,stroke:#e94560,color:#fff
+    style H fill:#533483,stroke:#e94560,color:#fff
 ```
 
 ### 2.2 Module Decomposition
@@ -104,8 +108,9 @@ graph LR
     end
 
     subgraph ui ["ui/"]
-        D["dashboard.py\nMain window & layout"]
-        W["widgets.py\nCustom UI components"]
+        D["dashboard.py\nLightweight CTk launcher"]
+        H["html_report.py\nHTML dashboard generator"]
+        W["widgets.py\nLegacy / utility widgets"]
     end
 
     subgraph root ["Project Root"]
@@ -116,7 +121,8 @@ graph LR
     MAIN --> D
     MAIN --> CFG
     D --> A
-    D --> W
+    D --> H
+    H --> M
     A --> P
     A --> M
     P --> M
@@ -125,7 +131,17 @@ graph LR
     style P fill:#16213e,stroke:#0f3460,color:#fff
     style A fill:#16213e,stroke:#0f3460,color:#fff
     style D fill:#533483,stroke:#e94560,color:#fff
+    style H fill:#533483,stroke:#e94560,color:#fff
 ```
+
+### 2.4 Dashboard Architecture (v0.3.0)
+
+The GUI was deliberately split into two layers to keep the Python process lightweight:
+
+1. **Launcher GUI** (`ui/dashboard.py`): A minimal CustomTkinter window (~520×400 px) with a folder picker, progress indicator, and buttons to open the generated report.
+2. **HTML Report** (`ui/html_report.py`): A self-contained `.html` file written into the export folder. Contains all CSS and JavaScript inline — no external dependencies, no CDN, works fully offline. Opens in the user's default browser.
+
+This approach avoids heavy Tkinter widget rendering for large datasets and delivers a modern, scrollable, searchable dashboard experience using the browser's native rendering engine.
 
 ### 2.3 Instagram Export Data Schema (Reverse-Engineered)
 
@@ -231,15 +247,15 @@ Instagram paginates follower lists across multiple files: `followers_1.html`, `f
 
 | Task | Status | Description | Priority |
 |---|---|---|---|
-| **3.1** Main Window Layout (`ui/dashboard.py`) | ✅ Done | CustomTkinter window with sidebar navigation, content area, status bar. | P0 |
-| **3.2** Import Wizard | ✅ Done | Folder picker dialog → background thread analysis → status bar feedback. | P0 |
-| **3.3** Follower/Following Diff View | ✅ Done | Scrollable list: "Not Following Back", "Fans", "Mutual", "Blocked", "Recently Unfollowed". | P0 |
-| **3.4** Summary Statistics Panel | ✅ Done | 5 stat cards: followers, following, not following back, fans, follow ratio. | P1 |
-| **3.5** Charts & Visualizations | ⏳ Pending | Follower/following ratio pie chart. Growth timeline (requires Phase 2). | P2 |
-| **3.6** Search & Filter | ✅ Done | Real-time username search with live filtering across all lists. | P2 |
+| **3.1** Lightweight Launcher (`ui/dashboard.py`) | ✅ Done | Minimal CustomTkinter window (520×400) — folder picker, progress bar, open-report buttons. | P0 |
+| **3.2** HTML Report Generator (`ui/html_report.py`) | ✅ Done | Self-contained HTML dashboard with embedded CSS/JS. Stat cards, horizontal bar chart, tabbed profile lists, global search, responsive design, dark theme. | P0 |
+| **3.3** Import → Report Flow | ✅ Done | Folder picker → background analysis → write `instagram_report.html` → open in browser. | P0 |
+| **3.4** Summary Statistics | ✅ Done | 5 animated stat cards: followers, following, not following back, fans, follow ratio with progress bar. | P1 |
+| **3.5** Charts & Visualizations | ✅ Done | CSS horizontal bar chart showing breakdown of mutual, not following back, fans, blocked, recently unfollowed. | P2 |
+| **3.6** Search & Filter | ✅ Done | Real-time client-side username search across all tab panels with live row re-numbering. Keyboard shortcuts: `/` to focus, `Esc` to clear. | P2 |
 | **3.7** Packaging | ⏳ Pending | PyInstaller build for Windows `.exe`. macOS `.app` bundle. | P3 |
 
-**Definition of Done**: User launches the app, selects their Instagram export folder, and sees a complete dashboard with follower/following analysis, statistics, and charts.
+**Definition of Done**: User launches the app, selects their Instagram export folder, and a beautiful HTML report opens in their browser with follower/following analysis, statistics, charts, and search.
 
 ---
 
@@ -373,13 +389,16 @@ instagram-analyzer/
 │   └── database.py            # SQLite operations (Phase 2)
 ├── ui/
 │   ├── __init__.py
-│   ├── dashboard.py           # Main window layout
-│   └── widgets.py             # Custom UI components
+│   ├── dashboard.py           # Lightweight CTk launcher
+│   ├── html_report.py         # HTML dashboard generator
+│   └── widgets.py             # Legacy / utility widgets
 ├── tests/
 │   ├── __init__.py
 │   ├── test_parser.py
-│   └── test_analyzer.py
+│   ├── test_analyzer.py
+│   └── test_html_report.py
 ├── .gitignore
+├── instagram_report.html       # ← GITIGNORED. Generated report output.
 └── instagram-*/               # ← GITIGNORED. User's data export.
 ```
 

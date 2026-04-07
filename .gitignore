@@ -1,6 +1,7 @@
 # === Instagram Data Exports (PRIVACY — NEVER COMMIT) ===
 instagram-*/
 instagram-*.zip
+instagram_report.html
 
 # === Python ===
 __pycache__/

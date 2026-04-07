@@ -18,7 +18,9 @@ def run_gui() -> None:
 
 
 def run_cli(export_path: Path) -> None:
+    import webbrowser
     from core.analyzer import run_analysis
+    from ui.html_report import generate_report
 
     result = run_analysis(export_path)
 
@@ -34,14 +36,13 @@ def run_cli(export_path: Path) -> None:
     print(f"  Blocked:             {len(result.blocked):>6,}")
     print(f"{'═' * 60}\n")
 
-    if result.not_following_back:
-        print(f"── NOT FOLLOWING BACK ({len(result.not_following_back)}) ──")
-        for i, r in enumerate(result.not_following_back, 1):
-            ts = r.timestamp.strftime("%Y-%m-%d") if r.timestamp else "unknown date"
-            print(f"  {i:4}.  {r.username:<32}  followed on {ts}")
+    report_path = generate_report(result, export_path)
+    print(f"  HTML report: {report_path}")
 
     if result.skipped_entries:
         print(f"\n[!] {result.skipped_entries} malformed entries were skipped during parsing.")
+
+    webbrowser.open(report_path.as_uri())
 
 
 def main() -> None:

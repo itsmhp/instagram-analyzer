@@ -4,7 +4,7 @@ from pathlib import Path
 
 # ── Application ───────────────────────────────────────────────────────────────
 APP_TITLE = "Instagram Analyzer"
-APP_VERSION = "0.2.0"
+APP_VERSION = "0.3.0"
 WINDOW_GEOMETRY = "1200x720"
 APPEARANCE_MODE = "dark"
 COLOR_THEME = "blue"
