@@ -1,0 +1,39 @@
+# === Instagram Data Exports (PRIVACY — NEVER COMMIT) ===
+instagram-*/
+instagram-*.zip
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# === Virtual Environment ===
+venv/
+.venv/
+env/
+.env
+
+# === Database (Phase 2) ===
+*.db
+*.sqlite
+*.sqlite3
+
+# === IDE / Editor ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# === OS ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === Build Artifacts ===
+*.spec
