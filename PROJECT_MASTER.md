@@ -1,6 +1,6 @@
 # PROJECT_MASTER.md — Instagram Analyzer
 
-> **Version**: 0.1.0 | **Created**: 2026-04-07 | **Status**: Pre-Implementation  
+> **Version**: 0.2.0 | **Created**: 2026-04-07 | **Updated**: 2026-04-07 | **Status**: Phase 1 + Phase 3 In Progress  
 > **Repository**: `https://github.com/itsmhp/instagram-analyzer`
 
 ---
@@ -195,14 +195,14 @@ Instagram paginates follower lists across multiple files: `followers_1.html`, `f
 **Objective**: Parse the HTML export and compute the follower/following differential.  
 **Output**: Working CLI/script that prints "users I follow who don't follow me back."
 
-| Task | Description | Priority |
-|---|---|---|
-| **1.1** Project scaffolding | Directory structure, `requirements.txt`, entry point `main.py` | P0 |
-| **1.2** HTML Parser (`core/parser.py`) | BeautifulSoup-based parser handling both Type A and Type B patterns. Glob-based multi-file ingestion for `followers_*.html`. | P0 |
-| **1.3** Data Models (`core/models.py`) | `ProfileRecord` dataclass with `username`, `profile_url`, `timestamp`, `source_file` | P0 |
-| **1.4** Analyzer (`core/analyzer.py`) | Set-difference algorithm: `following - followers = not_following_back`. Additional: `followers - following = fans`. | P0 |
-| **1.5** Config (`config.py`) | Export folder path resolution, file pattern constants | P0 |
-| **1.6** Validation | Unit tests for parser against both Type A and Type B HTML. Edge cases: empty files, malformed entries. | P1 |
+| Task | Status | Description | Priority |
+|---|---|---|---|
+| **1.1** Project scaffolding | ✅ Done | Directory structure, `requirements.txt`, entry point `main.py` | P0 |
+| **1.2** HTML Parser (`core/parser.py`) | ✅ Done | BeautifulSoup-based parser handling both Type A and Type B patterns. Glob-based multi-file ingestion for `followers_*.html`. | P0 |
+| **1.3** Data Models (`core/models.py`) | ✅ Done | `ProfileRecord` dataclass with `username`, `profile_url`, `timestamp`, `source_file` | P0 |
+| **1.4** Analyzer (`core/analyzer.py`) | ✅ Done | Set-difference algorithm: `following - followers = not_following_back`. Additional: `followers - following = fans`. | P0 |
+| **1.5** Config (`config.py`) | ✅ Done | Export folder path resolution, file pattern constants | P0 |
+| **1.6** Validation | ✅ Done | Unit tests for parser against both Type A and Type B HTML. Edge cases: empty files, malformed entries. | P1 |
 
 **Definition of Done**: Running `python main.py --export-path ./instagram-export/` prints a numbered list of non-reciprocal follows with timestamps.
 
@@ -229,15 +229,15 @@ Instagram paginates follower lists across multiple files: `followers_1.html`, `f
 **Objective**: Full GUI dashboard replacing CLI output.  
 **Output**: Desktop application with visual analytics.
 
-| Task | Description | Priority |
-|---|---|---|
-| **3.1** Main Window Layout (`ui/dashboard.py`) | CustomTkinter window with sidebar navigation, content area, status bar. | P0 |
-| **3.2** Import Wizard | File/folder picker dialog → triggers parser → progress bar → results display. | P0 |
-| **3.3** Follower/Following Diff View | Tabbed/scrollable list: "Not Following Back", "Fans (follow you, you don't follow)", "Mutual". Sortable by username/date. | P0 |
-| **3.4** Summary Statistics Panel | Total followers, following, ratio, blocked count, unfollowed count. Card-based layout. | P1 |
-| **3.5** Charts & Visualizations | Follower/following ratio pie chart. Growth timeline (requires Phase 2 multi-snapshot data). Matplotlib embedded in Tkinter. | P2 |
-| **3.6** Search & Filter | Real-time username search across all lists. Filter by date range. | P2 |
-| **3.7** Packaging | PyInstaller build for Windows `.exe`. macOS `.app` bundle. | P3 |
+| Task | Status | Description | Priority |
+|---|---|---|---|
+| **3.1** Main Window Layout (`ui/dashboard.py`) | ✅ Done | CustomTkinter window with sidebar navigation, content area, status bar. | P0 |
+| **3.2** Import Wizard | ✅ Done | Folder picker dialog → background thread analysis → status bar feedback. | P0 |
+| **3.3** Follower/Following Diff View | ✅ Done | Scrollable list: "Not Following Back", "Fans", "Mutual", "Blocked", "Recently Unfollowed". | P0 |
+| **3.4** Summary Statistics Panel | ✅ Done | 5 stat cards: followers, following, not following back, fans, follow ratio. | P1 |
+| **3.5** Charts & Visualizations | ⏳ Pending | Follower/following ratio pie chart. Growth timeline (requires Phase 2). | P2 |
+| **3.6** Search & Filter | ✅ Done | Real-time username search with live filtering across all lists. | P2 |
+| **3.7** Packaging | ⏳ Pending | PyInstaller build for Windows `.exe`. macOS `.app` bundle. | P3 |
 
 **Definition of Done**: User launches the app, selects their Instagram export folder, and sees a complete dashboard with follower/following analysis, statistics, and charts.
 
@@ -382,3 +382,7 @@ instagram-analyzer/
 ├── .gitignore
 └── instagram-*/               # ← GITIGNORED. User's data export.
 ```
+
+---
+
+> **End of Master Context. This document should be updated after every significant change.**
